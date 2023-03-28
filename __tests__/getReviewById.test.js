@@ -18,19 +18,19 @@ describe("GET /api/reviews/:review_id", () => {
       .get("/api/reviews/1")
       .expect(200)
       .then(({ body }) => {
-        const { reviewObject } = body;
-        expect(reviewObject.review_id).toBe(1);
-        expect(reviewObject).toHaveProperty("title", expect.any(String));
-        expect(reviewObject).toHaveProperty("designer", expect.any(String));
-        expect(reviewObject).toHaveProperty(
+        const { review } = body;
+        expect(review.review_id).toBe(1);
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty(
           "review_img_url",
           expect.any(String)
         );
-        expect(reviewObject).toHaveProperty("votes", expect.any(Number));
-        expect(reviewObject).toHaveProperty("category", expect.any(String));
-        expect(reviewObject).toHaveProperty("review_body", expect.any(String));
-        expect(reviewObject).toHaveProperty("owner", expect.any(String));
-        expect(reviewObject).toHaveProperty("created_at", expect.any(String));
+        expect(review).toHaveProperty("votes", expect.any(Number));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("review_body", expect.any(String));
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
       });
   });
   it("if review with id = two requested should respond with a review object with id two, with corresponding id and properties", () => {
@@ -38,19 +38,19 @@ describe("GET /api/reviews/:review_id", () => {
       .get("/api/reviews/2")
       .expect(200)
       .then(({ body }) => {
-        const { reviewObject } = body;
-        expect(reviewObject.review_id).toBe(2);
-        expect(reviewObject).toHaveProperty("title", expect.any(String));
-        expect(reviewObject).toHaveProperty("designer", expect.any(String));
-        expect(reviewObject).toHaveProperty(
+        const { review } = body;
+        expect(review.review_id).toBe(2);
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty(
           "review_img_url",
           expect.any(String)
         );
-        expect(reviewObject).toHaveProperty("votes", expect.any(Number));
-        expect(reviewObject).toHaveProperty("category", expect.any(String));
-        expect(reviewObject).toHaveProperty("review_body", expect.any(String));
-        expect(reviewObject).toHaveProperty("owner", expect.any(String));
-        expect(reviewObject).toHaveProperty("created_at", expect.any(String));
+        expect(review).toHaveProperty("votes", expect.any(Number));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("review_body", expect.any(String));
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
       });
   });
   it("if the request is for an id which doesn't exist, responds with status 404", () => {
