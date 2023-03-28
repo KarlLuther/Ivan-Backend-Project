@@ -5,13 +5,9 @@ exports.getReviewById = (req, res, next) => {
   const id = params.review_id;
   fetchReviewById(id)
     .then((reviewData) => {
-      res.status(200).send({ reviewObject: reviewData[0] });
+      res.status(200).send({ review: reviewData[0] });
     })
     .catch((err) => {
-      if (err.code === "22P02") {
         next(err);
-      } else {
-        next(err);
-      }
     });
 };
