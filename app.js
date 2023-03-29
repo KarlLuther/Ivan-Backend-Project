@@ -4,6 +4,7 @@ const app = express();
 //FUNCTIONS//
 const { getCategories } = require("./controllers/getCategories-controller");
 const { getReviewById } = require("./controllers/getReviewById-controller");
+const { getReviews } = require("./controllers/getReviews-controller");
 
 app.get("/api", (req, res) => {
   res.status(200).send({ message: "all okay" });
@@ -12,6 +13,8 @@ app.get("/api", (req, res) => {
 app.get("/api/categories", getCategories);
 
 app.get("/api/reviews/:review_id", getReviewById);
+
+app.get("/api/reviews", getReviews);
 
 app.use((err, req, res, next) => {
   if (err.status === 404) {
