@@ -140,7 +140,7 @@ describe("GET /api/reviews", () => {
   });
 });
 
-describe.only("POST /api/reviews/:review_id/comments", () => {
+describe("POST /api/reviews/:review_id/comments", () => {
   it("responds with the posted comment", () => {
     return request(app)
       .post("/api/reviews/1/comments")
