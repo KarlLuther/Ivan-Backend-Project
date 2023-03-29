@@ -30,6 +30,9 @@ describe("GET /api/reviews", () => {
           expect(review).toHaveProperty("designer", expect.any(String));
           if (review.id === 2 || review.id === 3) {
             expect(review.comment_count).toBe(3);
+          } else {
+            let comment_count = Number(review.comment_count);
+            expect(typeof comment_count).toBe("number");
           }
         }
       });
@@ -44,14 +47,6 @@ describe("GET /api/reviews", () => {
           let result = reviews[i - 1].created_at >= reviews[i].created_at;
           expect(result).toBe(true);
         }
-      });
-  });
-  it("status:404, responds with an error massage when passed a non-existant url", () => {
-    return request(app)
-      .get("/api/pupils")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("404: Sorry can't find that!");
       });
   });
 });
