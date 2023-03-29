@@ -139,3 +139,77 @@ describe("GET /api/reviews", () => {
       });
   });
 });
+
+describe.only("POST /api/reviews/:review_id/comments", () => {
+  it("responds with the posted comment", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "mallionaire", body: "Hi, username!" })
+      .expect(201)
+      .then(({ body }) => {
+        const { postedComment } = body;
+        expect(postedComment.review_id).toBe(1);
+        expect(postedComment).toHaveProperty("author", expect.any(String));
+        expect(postedComment).toHaveProperty("body", expect.any(String));
+        expect(postedComment).toHaveProperty("votes", expect.any(Number));
+        expect(postedComment).toHaveProperty("comment_id", expect.any(Number));
+        expect(postedComment).toHaveProperty("created_at", expect.any(String));
+      });
+  });
+  it("if the request is for a review_id which doesn't exist, responds with status 404", () => {
+    return request(app)
+      .post("/api/reviews/100/comments")
+      .send({ username: "mallionaire", body: "Hi, username!" })
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe(
+          "404: no review was found for the specified review_id or specified username does not exist in the system"
+        );
+      });
+  });
+  it("if the userame with specified name does not exist, responds with status 404", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "karl_Luther", body: "Hi, username!" })
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe(
+          "404: no review was found for the specified review_id or specified username does not exist in the system"
+        );
+      });
+  });
+  it("some other property on requested body apart from username and body", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "mallionaire", body: "Hi, username!", cats: "cats" })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("400: Some other property on request body");
+      });
+  });
+  it("parsed objest does not contain body property", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "mallionaire" })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("400: Request body does not contain body property");
+      });
+  });
+  it("parsed objest does not contain username property", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ body: "Hi, username!" })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe(
+          "400: Request body does not contain username property"
+        );
+      });
+  });
+});
