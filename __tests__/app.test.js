@@ -140,7 +140,7 @@ describe("GET /api/reviews", () => {
   });
 });
 
-describe.only("PATCH /api/reviews/:review_id", () => {
+describe("PATCH /api/reviews/:review_id", () => {
   it("responds with the updated review(checking for review with id =1 and increases votes by 1)", () => {
     const numberOfVotesToAdd = 1;
     return request(app)
