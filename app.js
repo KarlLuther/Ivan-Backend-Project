@@ -5,9 +5,11 @@ const app = express();
 const { getCategories } = require("./controllers/getCategories-controller");
 const { getReviewById } = require("./controllers/getReviewById-controller");
 const { getReviews } = require("./controllers/getReviews-controller");
-const {
-  getReviewComments,
-} = require("./controllers/getReviewComments-controller");
+const { postComment } = require("./controllers/postComment-controller");
+const { getReviewComments } = require("./controllers/getReviewComments-controller");
+
+
+app.use(express.json());
 
 app.get("/api", (req, res) => {
   res.status(200).send({ message: "all okay" });
@@ -19,7 +21,11 @@ app.get("/api/reviews/:review_id", getReviewById);
 
 app.get("/api/reviews", getReviews);
 
+app.post("/api/reviews/:review_id/comments", postComment);
+
 app.get("/api/reviews/:review_id/comments", getReviewComments);
+
+//GET ERROR HANDLING
 
 app.use((err, req, res, next) => {
   if (err.status === 404) {
@@ -28,7 +34,17 @@ app.use((err, req, res, next) => {
   if (err.code === "22P02") {
     res.status(400).send({ msg: `400: ill-formed request` });
   }
-  next();
+  next(err);
+});
+
+//POST ERROR HANDLING
+app.use((err, req, res, next) => {
+  if (err.code === "23503") {
+    res.status(404).send({
+      msg: `404: no review was found for the specified review_id or specified username does not exist in the system`,
+    });
+  }
+  next(err);
 });
 
 app.use((req, res, next) => {
