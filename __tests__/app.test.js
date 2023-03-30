@@ -148,19 +148,16 @@ describe("PATCH /api/reviews/:review_id", () => {
       .send({ inc_votes: numberOfVotesToAdd })
       .expect(200)
       .then(({ body }) => {
-        const { updatedReview } = body;
-        expect(updatedReview.votes).toBe(2);
-        expect(updatedReview).toHaveProperty("review_id", expect.any(Number));
-        expect(updatedReview).toHaveProperty("owner", expect.any(String));
-        expect(updatedReview).toHaveProperty("title", expect.any(String));
-        expect(updatedReview).toHaveProperty("category", expect.any(String));
-        expect(updatedReview).toHaveProperty(
-          "review_img_url",
-          expect.any(String)
-        );
-        expect(updatedReview).toHaveProperty("created_at", expect.any(String));
-        expect(updatedReview).toHaveProperty("designer", expect.any(String));
-        expect(updatedReview).toHaveProperty("review_body", expect.any(String));
+        const { review } = body;
+        expect(review.votes).toBe(2);
+        expect(review).toHaveProperty("review_id", expect.any(Number));
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("review_img_url", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty("review_body", expect.any(String));
       });
   });
   it("responds with the updated review(checking for review with id = 12 and increases votes by 10)", () => {
@@ -170,19 +167,16 @@ describe("PATCH /api/reviews/:review_id", () => {
       .send({ inc_votes: numberOfVotesToAdd })
       .expect(200)
       .then(({ body }) => {
-        const { updatedReview } = body;
-        expect(updatedReview.votes).toBe(110);
-        expect(updatedReview).toHaveProperty("review_id", expect.any(Number));
-        expect(updatedReview).toHaveProperty("owner", expect.any(String));
-        expect(updatedReview).toHaveProperty("title", expect.any(String));
-        expect(updatedReview).toHaveProperty("category", expect.any(String));
-        expect(updatedReview).toHaveProperty(
-          "review_img_url",
-          expect.any(String)
-        );
-        expect(updatedReview).toHaveProperty("created_at", expect.any(String));
-        expect(updatedReview).toHaveProperty("designer", expect.any(String));
-        expect(updatedReview).toHaveProperty("review_body", expect.any(String));
+        const { review } = body;
+        expect(review.votes).toBe(110);
+        expect(review).toHaveProperty("review_id", expect.any(Number));
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("review_img_url", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty("review_body", expect.any(String));
       });
   });
   it("responds with the updated review(checking for review with id = 12 and decreases votes by 10)", () => {
@@ -192,19 +186,16 @@ describe("PATCH /api/reviews/:review_id", () => {
       .send({ inc_votes: numberOfVotesToAdd })
       .expect(200)
       .then(({ body }) => {
-        const { updatedReview } = body;
-        expect(updatedReview.votes).toBe(90);
-        expect(updatedReview).toHaveProperty("review_id", expect.any(Number));
-        expect(updatedReview).toHaveProperty("owner", expect.any(String));
-        expect(updatedReview).toHaveProperty("title", expect.any(String));
-        expect(updatedReview).toHaveProperty("category", expect.any(String));
-        expect(updatedReview).toHaveProperty(
-          "review_img_url",
-          expect.any(String)
-        );
-        expect(updatedReview).toHaveProperty("created_at", expect.any(String));
-        expect(updatedReview).toHaveProperty("designer", expect.any(String));
-        expect(updatedReview).toHaveProperty("review_body", expect.any(String));
+        const { review } = body;
+        expect(review.votes).toBe(90);
+        expect(review).toHaveProperty("review_id", expect.any(Number));
+        expect(review).toHaveProperty("owner", expect.any(String));
+        expect(review).toHaveProperty("title", expect.any(String));
+        expect(review).toHaveProperty("category", expect.any(String));
+        expect(review).toHaveProperty("review_img_url", expect.any(String));
+        expect(review).toHaveProperty("created_at", expect.any(String));
+        expect(review).toHaveProperty("designer", expect.any(String));
+        expect(review).toHaveProperty("review_body", expect.any(String));
       });
   });
   it("if the request is for a review_id which doesn't exist, responds with status 404", () => {
@@ -215,9 +206,7 @@ describe("PATCH /api/reviews/:review_id", () => {
       .expect(404)
       .then(({ body }) => {
         const { msg } = body;
-        expect(msg).toBe(
-          "404: no review was found for the specified review_id"
-        );
+        expect(msg).toBe("404: no review was found for the specified review");
       });
   });
   it("if the parsed review_id is not a number, responds with status 400", () => {

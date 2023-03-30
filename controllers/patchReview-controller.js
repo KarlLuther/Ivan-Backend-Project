@@ -7,7 +7,7 @@ exports.patchReview = (req, res, next) => {
 
   changeReviewVotes(reviewId, reqBody)
     .then((patchedReviewArray) => {
-      res.status(200).send({ updatedReview: patchedReviewArray[0] });
+      res.status(200).send({ review: patchedReviewArray[0] });
     })
     .catch((err) => {
       if (

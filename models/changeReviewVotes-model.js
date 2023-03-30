@@ -37,7 +37,7 @@ exports.changeReviewVotes = (reviewId, reqBody) => {
       if (!rows[0]) {
         return Promise.reject({
           status: 404,
-          msg: `no review was found for the specified review_id`,
+          msg: `no review was found for the specified review`,
         });
       }
       return rows;
