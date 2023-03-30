@@ -21,7 +21,6 @@ exports.postComment = (req, res, next) => {
       res.status(201).send({ postedComment: addedCommentArray[0] });
     })
     .catch((err) => {
-      console.log(err.code);
       next(err);
     });
 };
