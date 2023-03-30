@@ -29,7 +29,6 @@ exports.patchReview = (req, res, next) => {
       res.status(200).send({ updatedReview: patchedReviewArray[0] });
     })
     .catch((err) => {
-      console.log(err.code);
       next(err);
     });
 };
