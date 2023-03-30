@@ -101,6 +101,72 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
+describe("GET /api/reviews/:review_id/comments", () => {
+  it("if comments from review with id = two are requested should respond with an array of comment objects with corresponding reviews_id and other properties", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        for (let comment of comments) {
+          expect(comment.review_id).toBe(2);
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+        }
+      });
+  });
+  it("if comments from review with id = three are requested should respond with an array of comment objects with corresponding reviews_id and other properties", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        for (let comment of comments) {
+          expect(comment.review_id).toBe(3);
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+        }
+      });
+  });
+  it("the comment array should be in descending order", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        for (let i = 1; i < comments.length; i++) {
+          let result = comments[i - 1].created_at >= comments[i].created_at;
+          expect(result).toBe(true);
+        }
+      });
+  });
+  it("if the request is for a review which doesn't have comments, responds with status 404", () => {
+    return request(app)
+      .get("/api/reviews/10/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
+      });
+  });
+  it("if the request is ill-formed, responds with status 400", () => {
+    return request(app)
+      .get("/api/reviews/cats/comments")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("400: ill-formed request");
+      });
+  });
+});
+
+
 describe("GET /api/reviews", () => {
   it("should respond with a reviews array of review objects, each of which should have corresponding properties", () => {
     return request(app)
@@ -235,6 +301,76 @@ describe("PATCH /api/reviews/:review_id", () => {
     return request(app)
       .patch("/api/reviews/1")
       .send({})
+
+describe("POST /api/reviews/:review_id/comments", () => {
+  it("responds with the posted comment", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "mallionaire", body: "Hi, username!" })
+      .expect(201)
+      .then(({ body }) => {
+        const { postedComment } = body;
+        expect(postedComment.review_id).toBe(1);
+        expect(postedComment).toHaveProperty("author", expect.any(String));
+        expect(postedComment).toHaveProperty("body", expect.any(String));
+        expect(postedComment).toHaveProperty("votes", expect.any(Number));
+        expect(postedComment).toHaveProperty("comment_id", expect.any(Number));
+        expect(postedComment).toHaveProperty("created_at", expect.any(String));
+      });
+  });
+  it("if the request is for a review_id which doesn't exist, responds with status 404", () => {
+    return request(app)
+      .post("/api/reviews/100/comments")
+      .send({ username: "mallionaire", body: "Hi, username!" })
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe(
+          "404: no review was found for the specified review_id or specified username does not exist in the system"
+        );
+      });
+  });
+  it("if the userame with specified name does not exist, responds with status 404", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "karl_Luther", body: "Hi, username!" })
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe(
+          "404: no review was found for the specified review_id or specified username does not exist in the system"
+        );
+      });
+  });
+  it("some other property on requested body apart from username and body", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "mallionaire", body: "Hi, username!", cats: "cats" })
+      .expect(201)
+      .then(({ body }) => {
+        const { postedComment } = body;
+        expect(postedComment.review_id).toBe(1);
+        expect(postedComment).toHaveProperty("author", expect.any(String));
+        expect(postedComment).toHaveProperty("body", expect.any(String));
+        expect(postedComment).toHaveProperty("votes", expect.any(Number));
+        expect(postedComment).toHaveProperty("comment_id", expect.any(Number));
+        expect(postedComment).toHaveProperty("created_at", expect.any(String));
+      });
+  });
+  it("parsed objest does not contain body property", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ username: "mallionaire" })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("400: Request body does not contain body property");
+      });
+  });
+  it("parsed objest does not contain username property", () => {
+    return request(app)
+      .post("/api/reviews/1/comments")
+      .send({ body: "Hi, username!" })
       .expect(400)
       .then(({ body }) => {
         const { msg } = body;
@@ -248,6 +384,14 @@ describe("PATCH /api/reviews/:review_id", () => {
     return request(app)
       .patch("/api/reviews/1")
       .send({ inc_votes: numberOfVotesToAdd })
+          "400: Request body does not contain username property"
+        );
+      });
+  });
+  it("if the request is for a review_id which is invalid, responds with status 400", () => {
+    return request(app)
+      .post("/api/reviews/cats/comments")
+      .send({ username: "mallionaire", body: "Hi, username!" })
       .expect(400)
       .then(({ body }) => {
         const { msg } = body;
