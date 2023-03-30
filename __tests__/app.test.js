@@ -140,7 +140,7 @@ describe("GET /api/reviews", () => {
   });
 });
 
-describe("PATCH /api/reviews/:review_id", () => {
+describe.only("PATCH /api/reviews/:review_id", () => {
   it("responds with the updated review(checking for review with id =1 and increases votes by 1)", () => {
     const numberOfVotesToAdd = 1;
     return request(app)
@@ -218,6 +218,17 @@ describe("PATCH /api/reviews/:review_id", () => {
         expect(msg).toBe(
           "404: no review was found for the specified review_id"
         );
+      });
+  });
+  it("if the parsed review_id is not a number, responds with status 400", () => {
+    const numberOfVotesToAdd = -10;
+    return request(app)
+      .patch("/api/reviews/cats")
+      .send({ inc_votes: numberOfVotesToAdd })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("400: ill-formed request");
       });
   });
   it("if some other property on requested body apart from inc_votes responds with 400", () => {
