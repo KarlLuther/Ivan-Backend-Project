@@ -17,6 +17,8 @@
 --       GROUP BY reviews.review_id
 --       ORDER BY created_at DESC;
 
-SELECT * FROM comments
-WHERE review_id = 3
-ORDER By created_at DESC;
+-- SELECT * FROM comments
+-- WHERE review_id = 3
+-- ORDER By created_at DESC;
+
+SELECT * FROM reviews;

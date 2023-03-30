@@ -149,10 +149,10 @@ describe("GET /api/reviews/:review_id/comments", () => {
   it("if the request is for a review which doesn't have comments, responds with status 404", () => {
     return request(app)
       .get("/api/reviews/10/comments")
-      .expect(404)
+      .expect(200)
       .then(({ body }) => {
-        const { msg } = body;
-        expect(msg).toBe("404: No comments found for review_id: 10");
+        const { comments } = body;
+        expect(comments).toEqual([]);
       });
   });
   it("if the request is ill-formed, responds with status 400", () => {
