@@ -5,13 +5,6 @@ exports.postComment = (req, res, next) => {
   const reviewId = params.review_id;
   const reqBody = req.body;
   const parsedBodyKeys = Object.keys(reqBody);
-  const validPropertiesToParse = ["username", "body"];
-
-  for (let key of parsedBodyKeys) {
-    if (!validPropertiesToParse.includes(key)) {
-      res.status(400).send({ msg: "400: Some other property on request body" });
-    }
-  }
 
   if (!parsedBodyKeys.includes("body")) {
     res
@@ -28,6 +21,7 @@ exports.postComment = (req, res, next) => {
       res.status(201).send({ postedComment: addedCommentArray[0] });
     })
     .catch((err) => {
+      console.log(err.code);
       next(err);
     });
 };

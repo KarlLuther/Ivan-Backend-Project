@@ -184,10 +184,15 @@ describe("POST /api/reviews/:review_id/comments", () => {
     return request(app)
       .post("/api/reviews/1/comments")
       .send({ username: "mallionaire", body: "Hi, username!", cats: "cats" })
-      .expect(400)
+      .expect(201)
       .then(({ body }) => {
-        const { msg } = body;
-        expect(msg).toBe("400: Some other property on request body");
+        const { postedComment } = body;
+        expect(postedComment.review_id).toBe(1);
+        expect(postedComment).toHaveProperty("author", expect.any(String));
+        expect(postedComment).toHaveProperty("body", expect.any(String));
+        expect(postedComment).toHaveProperty("votes", expect.any(Number));
+        expect(postedComment).toHaveProperty("comment_id", expect.any(Number));
+        expect(postedComment).toHaveProperty("created_at", expect.any(String));
       });
   });
   it("parsed objest does not contain body property", () => {
@@ -210,6 +215,16 @@ describe("POST /api/reviews/:review_id/comments", () => {
         expect(msg).toBe(
           "400: Request body does not contain username property"
         );
+      });
+  });
+  it("if the request is for a review_id which is invalid, responds with status 400", () => {
+    return request(app)
+      .post("/api/reviews/cats/comments")
+      .send({ username: "mallionaire", body: "Hi, username!" })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("400: ill-formed request");
       });
   });
 });
