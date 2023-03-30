@@ -101,6 +101,72 @@ describe("GET /api/reviews/:review_id", () => {
   });
 });
 
+
+describe("GET /api/reviews/:review_id/comments", () => {
+  it("if comments from review with id = two are requested should respond with an array of comment objects with corresponding reviews_id and other properties", () => {
+    return request(app)
+      .get("/api/reviews/2/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        for (let comment of comments) {
+          expect(comment.review_id).toBe(2);
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+        }
+      });
+  });
+  it("if comments from review with id = three are requested should respond with an array of comment objects with corresponding reviews_id and other properties", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        for (let comment of comments) {
+          expect(comment.review_id).toBe(3);
+          expect(comment).toHaveProperty("body", expect.any(String));
+          expect(comment).toHaveProperty("author", expect.any(String));
+          expect(comment).toHaveProperty("comment_id", expect.any(Number));
+          expect(comment).toHaveProperty("votes", expect.any(Number));
+          expect(comment).toHaveProperty("created_at", expect.any(String));
+        }
+      });
+  });
+  it("the comment array should be in descending order", () => {
+    return request(app)
+      .get("/api/reviews/3/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        for (let i = 1; i < comments.length; i++) {
+          let result = comments[i - 1].created_at >= comments[i].created_at;
+          expect(result).toBe(true);
+        }
+      });
+  });
+  it("if the request is for a review which doesn't have comments, responds with status 404", () => {
+    return request(app)
+      .get("/api/reviews/10/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments).toEqual([]);
+      });
+  });
+  it("if the request is ill-formed, responds with status 400", () => {
+    return request(app)
+      .get("/api/reviews/cats/comments")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("400: ill-formed request");
+      });
+  });
+});
+
 describe("GET /api/reviews", () => {
   it("should respond with a reviews array of review objects, each of which should have corresponding properties", () => {
     return request(app)

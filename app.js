@@ -6,6 +6,8 @@ const { getCategories } = require("./controllers/getCategories-controller");
 const { getReviewById } = require("./controllers/getReviewById-controller");
 const { getReviews } = require("./controllers/getReviews-controller");
 const { postComment } = require("./controllers/postComment-controller");
+const { getReviewComments } = require("./controllers/getReviewComments-controller");
+
 
 app.use(express.json());
 
@@ -21,7 +23,10 @@ app.get("/api/reviews", getReviews);
 
 app.post("/api/reviews/:review_id/comments", postComment);
 
+app.get("/api/reviews/:review_id/comments", getReviewComments);
+
 //GET ERROR HANDLING
+
 app.use((err, req, res, next) => {
   if (err.status === 404) {
     res.status(404).send({ msg: `404: ${err.msg}` });
