@@ -10,6 +10,7 @@ const {
   getReviewComments,
 } = require("./controllers/getReviewComments-controller");
 const { deleteComment } = require("./controllers/deleteComment-controller");
+const { getUsers } = require("./controllers/getUsers-controller");
 
 app.use(express.json());
 
@@ -26,6 +27,8 @@ app.get("/api/reviews/:review_id", getReviewById);
 app.get("/api/reviews", getReviews);
 
 app.get("/api/reviews/:review_id/comments", getReviewComments);
+
+app.get("/api/users", getUsers);
 
 //PATCH REQUESTS
 
