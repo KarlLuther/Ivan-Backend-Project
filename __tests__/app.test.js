@@ -435,7 +435,7 @@ describe("DELETE /api/comments/:comment_id", () => {
   });
 });
 
-describe.only("GET /api/users", () => {
+describe("GET /api/users", () => {
   it("should respond an array of users objects, each of which should have corresponding properties", () => {
     return request(app)
       .get("/api/users")
