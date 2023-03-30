@@ -1,13 +1,12 @@
 const express = require("express");
 const app = express();
 
-//FUNCTIONS//
 const { getCategories } = require("./controllers/getCategories-controller");
 const { getReviewById } = require("./controllers/getReviewById-controller");
 const { getReviews } = require("./controllers/getReviews-controller");
+const { patchReview } = require("./controllers/patchReview-controller");
 const { postComment } = require("./controllers/postComment-controller");
 const { getReviewComments } = require("./controllers/getReviewComments-controller");
-
 
 app.use(express.json());
 
@@ -21,9 +20,13 @@ app.get("/api/reviews/:review_id", getReviewById);
 
 app.get("/api/reviews", getReviews);
 
+app.get("/api/reviews/:review_id/comments", getReviewComments);
+
+app.patch("/api/reviews/:review_id", patchReview);
+
 app.post("/api/reviews/:review_id/comments", postComment);
 
-app.get("/api/reviews/:review_id/comments", getReviewComments);
+
 
 //GET ERROR HANDLING
 
