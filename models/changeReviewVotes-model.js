@@ -1,7 +1,6 @@
 const db = require("../db/connection.js");
 
 exports.changeReviewVotes = (reviewId, numberOfVotesToAdd) => {
-  // const { inc_votes } = reqBody;
   return db
     .query(
       `
@@ -22,17 +21,3 @@ exports.changeReviewVotes = (reviewId, numberOfVotesToAdd) => {
       return rows;
     });
 };
-
-// [
-//   {
-//     review_id: 1,
-//     title: 'Agricola',
-//     category: 'euro game',
-//     designer: 'Uwe Rosenberg',
-//     owner: 'mallionaire',
-//     review_body: 'Farmyard fun!',
-//     review_img_url: 'https://images.pexels.com/photos/974314/pexels-photo-974314.jpeg?w=700&h=700',
-//     created_at: 2021-01-18T10:00:20.514Z,
-//     votes: 2
-//   }
-// ]

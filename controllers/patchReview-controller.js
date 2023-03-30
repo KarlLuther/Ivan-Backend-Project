@@ -18,11 +18,6 @@ exports.patchReview = (req, res, next) => {
       .status(400)
       .send({ msg: "400: Request body does not contain inc_votes property" });
   }
-  // } else if (!parsedBodyKeys.includes("username")) {
-  //   res
-  //     .status(400)
-  //     .send({ msg: "400: Request body does not contain username property" });
-  // }
 
   changeReviewVotes(reviewId, numberOfVotesToAdd)
     .then((patchedReviewArray) => {
