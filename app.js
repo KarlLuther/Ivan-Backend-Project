@@ -6,13 +6,18 @@ const { getReviewById } = require("./controllers/getReviewById-controller");
 const { getReviews } = require("./controllers/getReviews-controller");
 const { patchReview } = require("./controllers/patchReview-controller");
 const { postComment } = require("./controllers/postComment-controller");
-const { getReviewComments } = require("./controllers/getReviewComments-controller");
+const {
+  getReviewComments,
+} = require("./controllers/getReviewComments-controller");
+const { deleteComment } = require("./controllers/deleteComment-controller");
 
 app.use(express.json());
 
 app.get("/api", (req, res) => {
   res.status(200).send({ message: "all okay" });
 });
+
+//GET REQUESTS
 
 app.get("/api/categories", getCategories);
 
@@ -22,11 +27,17 @@ app.get("/api/reviews", getReviews);
 
 app.get("/api/reviews/:review_id/comments", getReviewComments);
 
+//PATCH REQUESTS
+
 app.patch("/api/reviews/:review_id", patchReview);
+
+//POST REQUESTS
 
 app.post("/api/reviews/:review_id/comments", postComment);
 
+//DELETE REQUESTS
 
+app.delete("/api/comments/:comment_id", deleteComment);
 
 //GET ERROR HANDLING
 
@@ -41,6 +52,7 @@ app.use((err, req, res, next) => {
 });
 
 //POST ERROR HANDLING
+
 app.use((err, req, res, next) => {
   if (err.code === "23503") {
     res.status(404).send({

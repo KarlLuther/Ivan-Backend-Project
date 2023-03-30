@@ -166,7 +166,6 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
-
 describe("GET /api/reviews", () => {
   it("should respond with a reviews array of review objects, each of which should have corresponding properties", () => {
     return request(app)
@@ -301,6 +300,27 @@ describe("PATCH /api/reviews/:review_id", () => {
     return request(app)
       .patch("/api/reviews/1")
       .send({})
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe(
+          "400: Request body does not contain inc_votes property"
+        );
+      });
+  });
+
+  it("if value of inc_votes is not a number, responds with 400", () => {
+    const numberOfVotesToAdd = "random words";
+    return request(app)
+      .patch("/api/reviews/1")
+      .send({ inc_votes: numberOfVotesToAdd })
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe("400: ill-formed request");
+      });
+  });
+});
 
 describe("POST /api/reviews/:review_id/comments", () => {
   it("responds with the posted comment", () => {
@@ -375,15 +395,6 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .then(({ body }) => {
         const { msg } = body;
         expect(msg).toBe(
-          "400: Request body does not contain inc_votes property"
-        );
-      });
-  });
-  it("if value of inc_votes is not a number, responds with 400", () => {
-    const numberOfVotesToAdd = "random words";
-    return request(app)
-      .patch("/api/reviews/1")
-      .send({ inc_votes: numberOfVotesToAdd })
           "400: Request body does not contain username property"
         );
       });
@@ -396,6 +407,35 @@ describe("POST /api/reviews/:review_id/comments", () => {
       .then(({ body }) => {
         const { msg } = body;
         expect(msg).toBe("400: ill-formed request");
+      });
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  it("responds with status 204 and no content", () => {
+    return request(app)
+      .delete("/api/comments/1")
+      .expect(204)
+      .then(({ body }) => {
+        expect(body).toEqual({});
+      });
+  });
+  it("responds with status 404 if there is no comment with specified id", () => {
+    return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe(`404: No comment found for specified id: 1000`);
+      });
+  });
+  it("responds with status 400 if the parsed id is invalid", () => {
+    return request(app)
+      .delete("/api/comments/cats")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+        expect(msg).toBe(`400: ill-formed request`);
       });
   });
 });
