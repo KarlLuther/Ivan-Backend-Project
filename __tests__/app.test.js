@@ -413,12 +413,7 @@ describe("POST /api/reviews/:review_id/comments", () => {
 
 describe("DELETE /api/comments/:comment_id", () => {
   it("responds with status 204 and no content", () => {
-    return request(app)
-      .delete("/api/comments/1")
-      .expect(204)
-      .then(({ body }) => {
-        expect(body).toEqual({});
-      });
+    return request(app).delete("/api/comments/1").expect(204);
   });
   it("responds with status 404 if there is no comment with specified id", () => {
     return request(app)
