@@ -1,6 +1,9 @@
 const db = require("../db/connection.js");
 
-exports.fetchReviews = () => {
+exports.fetchReviews = (order = "DESC") => {
+  const upperCaseOrderParam = order.toUpperCase();
+
+  console.log(upperCaseOrderParam);
   return db
     .query(
       `
@@ -18,8 +21,9 @@ exports.fetchReviews = () => {
       LEFT JOIN comments
       ON reviews.review_id = comments.review_id
       GROUP BY reviews.review_id
-      ORDER BY created_at DESC;
-  `
+      ORDER BY created_at $1;
+  `,
+      [upperCaseOrderParam]
     )
     .then(({ rows }) => {
       return rows;
