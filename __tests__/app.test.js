@@ -166,7 +166,7 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
-describe.only("GET /api/reviews", () => {
+describe("GET /api/reviews", () => {
   it("should respond with a reviews array of review objects, each of which should have corresponding properties", () => {
     return request(app)
       .get("/api/reviews")
