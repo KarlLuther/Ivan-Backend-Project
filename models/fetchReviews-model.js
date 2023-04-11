@@ -1,13 +1,65 @@
 const db = require("../db/connection.js");
 
-exports.fetchReviews = (order = "DESC") => {
-  const upperCaseOrderParam = order.toUpperCase();
+exports.fetchReviews = (
+  order = "DESC",
+  sortBy = "created_at",
+  categoryToSelect = "undefined"
+) => {
+  const allowedInserionValues = [
+    "DESC",
+    "ASC",
+    "created_at",
+    "votes",
+    "review_id",
+    "comment_count",
+  ];
+  const params = [order, sortBy];
 
-  console.log(upperCaseOrderParam);
+  let reject;
+
+  params.forEach((paramValue) => {
+    if (!allowedInserionValues.includes(paramValue)) {
+      reject = Promise.reject({
+        status: 400,
+        msg: `Ill-formed request`,
+      });
+    }
+  });
+
+  if (reject !== undefined) {
+    return reject;
+  }
+
   return db
     .query(
       `
-      SELECT 
+  SELECT DISTINCT category
+  FROM reviews;
+  `
+    )
+    .then(({ rows }) => {
+      const tableCategories = [];
+      rows.forEach((categoryObj) => {
+        tableCategories.push(categoryObj.category);
+      });
+      tableCategories.push("undefined");
+      if (!tableCategories.includes(categoryToSelect)) {
+        return Promise.reject({
+          status: 400,
+          msg: `Ill-formed request`,
+        });
+      }
+    })
+    .then(() => {
+      const categoryQuery =
+        categoryToSelect !== "undefined"
+          ? `
+      WHERE 
+      category = '${categoryToSelect}'
+      `
+          : "";
+
+      const theQuery = `      SELECT
       reviews.title,
   reviews.designer,
   reviews.owner,
@@ -20,64 +72,13 @@ exports.fetchReviews = (order = "DESC") => {
       FROM reviews
       LEFT JOIN comments
       ON reviews.review_id = comments.review_id
+      ${categoryQuery}
       GROUP BY reviews.review_id
-      ORDER BY created_at $1;
-  `,
-      [upperCaseOrderParam]
-    )
-    .then(({ rows }) => {
-      return rows;
+      ORDER BY ${sortBy} ${order};
+    `;
+
+      return db.query(theQuery).then(({ rows }) => {
+        return rows;
+      });
     });
 };
-
-// SELECT COUNT(ProductID) AS NumberOfProducts FROM Products;
-
-// SELECT column_name(s)
-// FROM table1
-// LEFT JOIN table2
-// ON table1.column_name = table2.column_name;
-
-// function fetchReviewsComments() {
-//   return db
-//     .query(
-//       `
-//     SELECT review_id FROM comments;
-//     `
-//     )
-//     .then(({ rows }) => {
-//       return rows;
-//     });
-// }
-
-// exports.fetchReviews = () => {
-//   return Promise.all([fetchReviewsComments(), fetchReviewsData()]).then(
-//     (result) => {
-//       const reviewCommentsArray = result[0];
-//       const reviewsArray = result[1];
-//       const countObject = {};
-//       for (let idObject of reviewCommentsArray) {
-//         let { review_id } = idObject;
-//         if (countObject[review_id]) {
-//           countObject[review_id]++;
-//         } else {
-//           countObject[review_id] = 1;
-//         }
-//       }
-//       // for (let review of reviewsArray) {
-//       //   review.comment_count = countObject[review_id]
-//       //     ? countObject[review_id]
-//       //     : 0;
-//       // }
-//       reviewsArray.forEach((review) => {
-//         if (countObject[review.review_id]) {
-//           review.comment_count += countObject[review_id];
-//         } else {
-//           review.comment_count = 1;
-//         }
-//       });
-//       console.log("shooo");
-//       console.log(reviewsArray[0]);
-//       console.log(reviewsArray[1]);
-//     }
-//   );
-// };

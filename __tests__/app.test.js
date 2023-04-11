@@ -166,56 +166,100 @@ describe("GET /api/reviews/:review_id/comments", () => {
   });
 });
 
-// describe.only("GET /api/reviews", () => {
-//   it("should respond with a reviews array of review objects, each of which should have corresponding properties", () => {
-//     return request(app)
-//       .get("/api/reviews")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { reviews } = body;
-//         for (let review of reviews) {
-//           expect(review).toHaveProperty("review_id", expect.any(Number));
-//           expect(review).toHaveProperty("owner", expect.any(String));
-//           expect(review).toHaveProperty("title", expect.any(String));
-//           expect(review).toHaveProperty("category", expect.any(String));
-//           expect(review).toHaveProperty("review_img_url", expect.any(String));
-//           expect(review).toHaveProperty("created_at", expect.any(String));
-//           expect(review).toHaveProperty("votes", expect.any(Number));
-//           expect(review).toHaveProperty("designer", expect.any(String));
-//           if (review.id === 2 || review.id === 3) {
-//             expect(review.comment_count).toBe(3);
-//           } else {
-//             let comment_count = Number(review.comment_count);
-//             expect(typeof comment_count).toBe("number");
-//           }
-//         }
-//       });
-//   });
-//   it("the array should be in descending order unless specified otherwise", () => {
-//     return request(app)
-//       .get("/api/reviews")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { reviews } = body;
-//         for (let i = 1; i < reviews.length; i++) {
-//           let result = reviews[i - 1].created_at >= reviews[i].created_at;
-//           expect(result).toBe(true);
-//         }
-//       });
-//   });
-//   it("the array should be in ascending order if specified in the query", () => {
-//     return request(app)
-//       .get("/api/reviews?order=ASC")
-//       .expect(200)
-//       .then(({ body }) => {
-//         const { reviews } = body;
-//         for (let i = 1; i < reviews.length; i++) {
-//           let result = reviews[i - 1].created_at <= reviews[i].created_at;
-//           expect(result).toBe(true);
-//         }
-//       });
-//   });
-// });
+describe.only("GET /api/reviews", () => {
+  it("should respond with a reviews array of review objects, each of which should have corresponding properties", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        // console.log(reviews);
+        for (let review of reviews) {
+          expect(review).toHaveProperty("review_id", expect.any(Number));
+          expect(review).toHaveProperty("owner", expect.any(String));
+          expect(review).toHaveProperty("title", expect.any(String));
+          expect(review).toHaveProperty("category", expect.any(String));
+          expect(review).toHaveProperty("review_img_url", expect.any(String));
+          expect(review).toHaveProperty("created_at", expect.any(String));
+          expect(review).toHaveProperty("votes", expect.any(Number));
+          expect(review).toHaveProperty("designer", expect.any(String));
+          if (review.id === 2 || review.id === 3) {
+            expect(review.comment_count).toBe(3);
+          } else {
+            let comment_count = Number(review.comment_count);
+            expect(typeof comment_count).toBe("number");
+          }
+        }
+      });
+  });
+  it("the array should be in descending order unless specified otherwise", () => {
+    return request(app)
+      .get("/api/reviews")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        for (let i = 1; i < reviews.length; i++) {
+          let result = reviews[i - 1].created_at >= reviews[i].created_at;
+          expect(result).toBe(true);
+        }
+      });
+  });
+  it("the array should be in ascending order if specified in the query", () => {
+    return request(app)
+      .get("/api/reviews?order=ASC")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        for (let i = 1; i < reviews.length; i++) {
+          let result = reviews[i - 1].created_at <= reviews[i].created_at;
+          expect(result).toBe(true);
+        }
+      });
+  });
+  it("the array can be sorted by different column values", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=review_id")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        for (let i = 1; i < reviews.length; i++) {
+          let result = reviews[i - 1].review_id >= reviews[i].review_id;
+          expect(result).toBe(true);
+        }
+      });
+  });
+  it("the array can be sorted by different categories(testing testing for dexterity)", () => {
+    return request(app)
+      .get("/api/reviews?category=dexterity")
+      .expect(200)
+      .then(({ body }) => {
+        const { reviews } = body;
+        reviews.forEach((review) => {
+          expect(review.category).toBe("dexterity");
+        });
+      });
+  });
+  it("wrong argument in order_by field", () => {
+    return request(app)
+      .get("/api/reviews?order=SELECT 1")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Ill-formed request");
+      });
+  });
+  it("wrong argument in sort_by field", () => {
+    return request(app)
+      .get("/api/reviews?sort_by=SELECT 2")
+      .expect(400)
+      .then(({ body }) => {
+        const { msg } = body;
+
+        expect(msg).toBe("Ill-formed request");
+      });
+  });
+});
 
 describe("PATCH /api/reviews/:review_id", () => {
   it("responds with the updated review(checking for review with id =1 and increases votes by 1)", () => {
