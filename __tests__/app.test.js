@@ -173,7 +173,6 @@ describe("GET /api/reviews", () => {
       .expect(200)
       .then(({ body }) => {
         const { reviews } = body;
-        // console.log(reviews);
         for (let review of reviews) {
           expect(review).toHaveProperty("review_id", expect.any(Number));
           expect(review).toHaveProperty("owner", expect.any(String));
