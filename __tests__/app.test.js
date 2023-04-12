@@ -62,6 +62,12 @@ describe("GET /api/reviews/:review_id", () => {
         expect(review).toHaveProperty("review_body", expect.any(String));
         expect(review).toHaveProperty("owner", expect.any(String));
         expect(review).toHaveProperty("created_at", expect.any(String));
+        if (review.id === 2 || review.id === 3) {
+          expect(review.comment_count).toBe(3);
+        } else {
+          let comment_count = Number(review.comment_count);
+          expect(typeof comment_count).toBe("number");
+        }
       });
   });
   it("if review with id = two requested should respond with a review object with id two, with corresponding id and properties", () => {
@@ -79,6 +85,12 @@ describe("GET /api/reviews/:review_id", () => {
         expect(review).toHaveProperty("review_body", expect.any(String));
         expect(review).toHaveProperty("owner", expect.any(String));
         expect(review).toHaveProperty("created_at", expect.any(String));
+        if (review.id === 2 || review.id === 3) {
+          expect(review.comment_count).toBe(3);
+        } else {
+          let comment_count = Number(review.comment_count);
+          expect(typeof comment_count).toBe("number");
+        }
       });
   });
   it("if the request is for an id which doesn't exist, responds with status 404", () => {
