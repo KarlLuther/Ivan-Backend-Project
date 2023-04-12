@@ -505,3 +505,15 @@ describe("GET /api/users", () => {
       });
   });
 });
+
+describe.only("GET /api", () => {
+  test("should respond with a JSON describing all the available endpoint on the API", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body }) => {
+        const endpoints = body;
+        expect(endpoints.length).toBe(8);
+      });
+  });
+});
